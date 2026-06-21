@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify"
 import fp from "fastify-plugin"
 import { type Kysely, sql } from "kysely"
-import type { DB } from "#database/db.d.js"
+import type { DB, Json } from "#database/db.d.js"
 
 declare module "fastify" {
     interface FastifyInstance {
@@ -29,23 +29,23 @@ class CacheService {
             .selectFrom("cache")
             .select(["key", "value", "expires_at"])
             .where("key", "=", key)
-            .where((eb) => eb.or([eb("expires_at", "is", null), eb("expires_at", ">", sql`NOW()` as any)]))
+            .where((eb) => eb.or([eb("expires_at", "is", null), eb("expires_at", ">", sql<Date>`NOW()`)]))
             .executeTakeFirst()
 
         return item ? (item.value as T) : false
     }
 
-    async set(key: string, data: unknown, exp = 300): Promise<void> {
-        const expiresAt = exp ? (sql`NOW() + ${exp} * INTERVAL '1 second'` as any) : null
+    async set(key: string, data: Json, exp = 300): Promise<void> {
+        const expiresAt = exp ? sql<Date>`NOW() + ${exp} * INTERVAL '1 second'` : null
 
         await this.db
             .insertInto("cache")
-            .values({ key, value: data as any, expires_at: expiresAt })
+            .values({ key, value: data, expires_at: expiresAt })
             .onConflict((oc) =>
                 oc.column("key").doUpdateSet({
-                    value: data as any,
+                    value: data,
                     expires_at: expiresAt,
-                    created_at: sql`NOW()` as any,
+                    created_at: sql<Date>`NOW()`,
                 }),
             )
             .execute()
@@ -66,7 +66,7 @@ class CacheService {
             .selectFrom("cache")
             .select("key")
             .where("key", "like", pattern.replace(/\*/g, "%"))
-            .where((eb) => eb.or([eb("expires_at", "is", null), eb("expires_at", ">", sql`NOW()` as any)]))
+            .where((eb) => eb.or([eb("expires_at", "is", null), eb("expires_at", ">", sql<Date>`NOW()`)]))
             .execute()
 
         return items.map((item) => item.key)

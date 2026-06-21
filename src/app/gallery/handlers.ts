@@ -2,6 +2,17 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import conf from "#config/environment.js"
 import type { DestroyMany, KeyQueryString } from "./types.js"
 
+type GalleryContent = {
+    Key?: string
+    LastModified?: string
+    Size?: number
+    Url?: string
+}
+
+type GalleryListResponse = {
+    Contents: GalleryContent[]
+}
+
 class GalleryHandler {
     constructor(private readonly fastify: FastifyInstance) {}
 
@@ -17,15 +28,13 @@ class GalleryHandler {
 
     public gallery = async (_req: FastifyRequest, reply: FastifyReply) => {
         const key = "gallery:list"
-        let data = await this.fastify.cache.get<any>(key)
+        let data = await this.fastify.cache.get<GalleryListResponse>(key)
 
         if (!data) {
-            const contents: Array<{ Key?: string; LastModified?: string; Size?: number; Url?: string }> = []
+            const contents: GalleryContent[] = []
 
             const stream = this.fastify.s3.listObjectsV2(conf.storage.bucket || "", "", true)
-            data = await new Promise<{
-                Contents: Array<{ Key?: string; LastModified?: string; Size?: number; Url?: string }>
-            }>((resolve, reject) => {
+            data = await new Promise<GalleryListResponse>((resolve, reject) => {
                 stream.on("data", (object) => {
                     contents.push({
                         Key: object.name,
