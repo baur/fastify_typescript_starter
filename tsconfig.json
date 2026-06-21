@@ -1,0 +1,35 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "strict": true,
+        "outDir": "dist",
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ESNext"],
+        "sourceMap": false,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "removeComments": true,
+        "noUnusedLocals": true,
+        "isolatedModules": true,
+        "noFallthroughCasesInSwitch": true,
+        "newLine": "lf",
+        "baseUrl": "./src",
+        "paths": {
+            "#app/*": ["app/*"],
+            "#plugins/*": ["plugins/*"],
+            "#database/*": ["database/*"],
+            "#config/*": ["config/*"],
+            "#queue/*": ["queue/*"]
+        }
+    },
+    "watchOptions": {
+        "watchFile": "dynamicPriorityPolling"
+    },
+    "include": ["src/**/*.ts", "src/**/*.d.ts"],
+    "exclude": ["node_modules", "test/**/*.ts"]
+}
