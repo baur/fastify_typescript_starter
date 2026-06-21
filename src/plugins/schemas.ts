@@ -3,6 +3,7 @@ import fp from "fastify-plugin"
 import { models as authModels } from "#app/auth/schema.js"
 import { models as baseModels } from "#app/base/schema.js"
 import { models as galleryModels } from "#app/gallery/schema.js"
+import { models as plantTypeModels } from "#app/plant-types/schema.js"
 import { models as plantModels } from "#app/plants/schema.js"
 import { models as configModels } from "#config/schema.js"
 
@@ -17,6 +18,7 @@ export const allModels: readonly unknown[] = [
     ...authModels,
     ...baseModels,
     ...galleryModels,
+    ...plantTypeModels,
     ...plantModels,
 ]
 

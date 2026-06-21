@@ -1,13 +1,13 @@
 import type { FastifyInstance, FastifyPluginAsync } from "fastify"
-import PlantHandler from "./handlers.js"
-import PlantRepository from "./repository.js"
+import PlantTypeHandler from "./handlers.js"
+import PlantTypeRepository from "./repository.js"
 import { RouteSchema } from "./schema.js"
-import PlantService from "./service.js"
+import PlantTypeService from "./service.js"
 
 const routes: FastifyPluginAsync = async (app: FastifyInstance) => {
-    const repo = new PlantRepository(app.db)
-    const svc = new PlantService(app, repo)
-    const handler = new PlantHandler(svc)
+    const repo = new PlantTypeRepository(app.db)
+    const svc = new PlantTypeService(app, repo)
+    const handler = new PlantTypeHandler(svc)
 
     app.route({
         method: "GET",
@@ -18,7 +18,7 @@ const routes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
     app.route({
         method: "GET",
-        url: "/:plant_id",
+        url: "/:plant_type_id",
         schema: RouteSchema.get,
         handler: handler.get,
     })
@@ -32,14 +32,14 @@ const routes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
     app.route({
         method: "PATCH",
-        url: "/:plant_id",
+        url: "/:plant_type_id",
         schema: RouteSchema.update,
         handler: handler.update,
     })
 
     app.route({
         method: "DELETE",
-        url: "/:plant_id",
+        url: "/:plant_type_id",
         schema: RouteSchema.destroy,
         handler: handler.delete,
     })
