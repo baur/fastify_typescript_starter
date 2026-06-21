@@ -39,7 +39,7 @@ Rule of thumb:
 
 2. Replace schema autoscan with explicit registry
 
-   `src/plugins/schemas.ts` recursively scans and dynamically imports schema files. It is convenient but magic.
+   Done. `src/plugins/schemas.ts` now imports schema model arrays explicitly and registers a single `allModels` list.
 
    Simpler model:
 
@@ -99,7 +99,7 @@ Rule of thumb:
 ## Personal Cleanup Order
 
 1. Simplify TLS: HTTP in the app, HTTPS outside. Done.
-2. Replace schema autoscan with explicit schema registry.
+2. Replace schema autoscan with explicit schema registry. Done.
 3. Decide whether pg-boss is needed now.
 4. Clean up cache: explicit tables for OTP/attempts or a clear cache adapter.
 5. Split or reduce `environment.ts`.
