@@ -4,11 +4,11 @@ import { DeduplicateJoinsPlugin, Kysely, PostgresDialect, sql } from "kysely"
 import { Pool, type PoolConfig } from "pg"
 import conf from "#config/environment.js"
 import type { DB } from "#database/db.d.js"
-import { createDbHelpers, type DbHelpers, getDbHealth } from "#database/helpers.js"
+import { getDbHealth } from "#database/helpers.js"
 
 declare module "fastify" {
     interface FastifyInstance {
-        db: Kysely<DB> & DbHelpers
+        db: Kysely<DB>
     }
 }
 
@@ -38,17 +38,10 @@ async function fastifyDb(app: FastifyInstance, opts: PoolConfig) {
 
         await sql`SET TIME ZONE ${sql.raw(`'${conf.database.timezone}'`)};`.execute(db)
 
-        const dbWithHelpers = db as Kysely<DB> & DbHelpers
-        const helpers = createDbHelpers(db)
-        dbWithHelpers.paginate = helpers.paginate
-        dbWithHelpers.pgerr = helpers.pgerr
-        dbWithHelpers.isPgError = helpers.isPgError
-        dbWithHelpers.health = helpers.health
-
-        app.decorate("db", dbWithHelpers)
+        app.decorate("db", db)
 
         app.addHook("onClose", async (fastify) => {
-            if (fastify.db === dbWithHelpers) {
+            if (fastify.db === db) {
                 await db.destroy()
             }
         })

@@ -1,7 +1,7 @@
 services:
   app:
     build:
-      context: ..
+      context: .
       target: dev
       dockerfile: Dockerfile
     command: sleep infinity
@@ -24,7 +24,7 @@ services:
     expose:
       - "3000"
     volumes:
-      - "..:/app:delegated"
+      - ".:/app:delegated"
       - "starter_dev_node_modules:/app/node_modules"
     depends_on:
       database:

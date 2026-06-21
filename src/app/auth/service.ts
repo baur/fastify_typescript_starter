@@ -3,7 +3,7 @@ import { ofetch } from "ofetch"
 
 import conf from "#config/environment.js"
 import type AuthRepository from "./repository.js"
-import type { ResetPassword, User, UserLogin } from "./types.js"
+import type { ResetPassword, UserLogin } from "./types.js"
 
 class AuthService {
     constructor(
@@ -69,12 +69,12 @@ class AuthService {
             email_verified: false,
             role: "customer",
             is_banned: false,
-        } as User)
+        })
     }
 
     public async verifyUserEmail(email: string) {
         const updatedUser = await this.repo.updateUserEmailVerified(email)
-        return this.app.auth.token(updatedUser as User)
+        return this.app.auth.token(updatedUser)
     }
 
     public async updateUserPassword(params: ResetPassword) {

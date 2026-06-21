@@ -1,11 +1,12 @@
 {
     "name": "Fastify TypeScript Starter",
-    "dockerComposeFile": ["docker-compose.yml"],
+    "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
     "service": "app",
     "workspaceFolder": "/app",
     "runServices": ["database", "mailpit"],
     "shutdownAction": "stopCompose",
     "overrideCommand": false,
+    "initializeCommand": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"if (-not (Test-Path -LiteralPath '${localWorkspaceFolder}\\.env')) { Copy-Item -LiteralPath '${localWorkspaceFolder}\\.env.example' -Destination '${localWorkspaceFolder}\\.env' }\"",
     "forwardPorts": [3000, 5432, 8025, 1025],
     "portsAttributes": {
         "3000": {

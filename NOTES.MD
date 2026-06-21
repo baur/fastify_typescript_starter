@@ -69,12 +69,14 @@ Rule of thumb:
 
 5. Reduce `environment.ts`
 
-   `src/config/environment.ts` currently owns server, DB, queue, SMTP, S3, CSP, Swagger, healthcheck, TLS, and captcha config.
+   Done. `src/config/environment.ts` is now a thin aggregator. Domain-specific config lives in smaller modules under `src/config`:
 
-   Possible simplifications:
-
-   - split into smaller config modules
-   - or keep one file but remove unused knobs
+   - `database.ts` for PostgreSQL and pg-boss
+   - `storage.ts` for S3/MinIO and multipart limits
+   - `mailer.ts` for SMTP
+   - `http.ts` for auth, CORS, CSP, healthcheck, and OpenAPI auth
+   - `swagger.ts` for OpenAPI generation
+   - `parsers.ts` and `types.ts` for shared config helpers
 
 6. Make captcha optional at the edge
 
@@ -84,7 +86,7 @@ Rule of thumb:
 
 7. Remove unused generic DB helpers
 
-   `src/database/helpers.ts` has generic pagination with `any`. If pagination is not used yet, delete it until a real endpoint needs it.
+   Done. Generic `paginate` and the `DbHelpers` decorator mutation were removed. `src/database/helpers.ts` now only keeps PostgreSQL error helpers and the DB health query.
 
    When pagination is needed, implement it around the actual query pattern.
 
@@ -102,5 +104,5 @@ Rule of thumb:
 2. Replace schema autoscan with explicit schema registry. Done.
 3. Decide whether pg-boss is needed now.
 4. Clean up cache: explicit tables for OTP/attempts or a clear cache adapter.
-5. Split or reduce `environment.ts`.
-6. Remove unused generic helpers with `any`.
+5. Split or reduce `environment.ts`. Done.
+6. Remove unused generic helpers with `any`. Done.
