@@ -1,7 +1,7 @@
+import type { FastifyInstance, FastifyPluginAsync } from "fastify"
 import authRoutes from "#app/auth/routes.js"
 import rootRoutes from "#app/base/routes.js"
 import galleryRoutes from "#app/gallery/routes.js"
-import type { FastifyInstance, FastifyPluginAsync } from "fastify"
 
 const routes: FastifyPluginAsync = async (app: FastifyInstance) => {
     await app.setNotFoundHandler((_request, reply) => {

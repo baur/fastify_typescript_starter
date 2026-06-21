@@ -1,12 +1,7 @@
 import type { SendOptions } from "pg-boss"
 import { QueueOperations } from "./base/index.js"
 import { queueConfigs } from "./config.js"
-import {
-    createSendOtpEmailHandler,
-    JOB_NAMES,
-    type JobName,
-    type JobTypeMap,
-} from "./workers/index.js"
+import { createSendOtpEmailHandler, JOB_NAMES, type JobName, type JobTypeMap } from "./workers/index.js"
 
 export * from "./base/index.js"
 export * from "./config.js"

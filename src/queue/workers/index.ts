@@ -7,5 +7,5 @@ export const JOB_NAMES = {
 
 export type JobName = (typeof JOB_NAMES)[keyof typeof JOB_NAMES]
 
-export { createSendOtpEmailHandler }
 export type { JobTypeMap }
+export { createSendOtpEmailHandler }

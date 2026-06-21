@@ -1,5 +1,5 @@
-import { Type } from "typebox"
 import type { FastifySchema } from "fastify"
+import { Type } from "typebox"
 
 export namespace Data {
     export const galleryContentObj = Type.Object(

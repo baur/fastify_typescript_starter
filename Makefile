@@ -66,19 +66,19 @@ dev: down up log
 
 ## enter: Open a shell inside the API container
 enter:
-	docker exec -it api sh
+	docker compose exec app sh
 
 ## enter-db: Open a shell inside the database container
 enter-db:
-	docker exec -it db sh
+	docker compose exec database sh
 
 ## log: Follow logs for API container
 log:
-	docker logs -f api
+	docker compose logs -f app
 
 ## log-db: Follow logs for database container
 log-db:
-	docker logs -f db
+	docker compose logs -f database
 
 kysely_codegen := npx kysely-codegen
 dbmate := npx dbmate --url "$(PG_CONNECTION_STRING)?sslmode=disable" --migrations-dir src/database/migrations --no-dump-schema
@@ -119,19 +119,13 @@ db-query:
 		echo "Error: 'SQL' variable must be set. Usage: make db-query SQL=\"SELECT * FROM auth_users\""; \
 		exit 1; \
 	fi
-	@CID=$$(docker ps -aq -f name=db) ; \
-	test -n "$$CID" || (echo "db container not found or not running" && exit 1) ; \
-	docker exec $$CID sh -c 'PGPASSWORD="$(DB_PASSWORD)" psql -U "$(DB_USER)" -d "$(DB_NAME)" -h localhost -p 5432 -c "$(SQL)"'
+	@docker compose exec -T database sh -c 'PGPASSWORD="$(DB_PASSWORD)" psql -U "$(DB_USER)" -d "$(DB_NAME)" -h localhost -p 5432 -c "$(SQL)"'
 
 ## db-shell: Open interactive psql session in container
 db-shell:
-	@CID=$$(docker ps -aq -f name=db) ; \
-	test -n "$$CID" || (echo "db container not found or not running" && exit 1) ; \
-	docker exec -it $$CID sh -c 'PGPASSWORD="$(DB_PASSWORD)" psql -U "$(DB_USER)" -d "$(DB_NAME)" -h localhost -p 5432'
+	@docker compose exec database sh -c 'PGPASSWORD="$(DB_PASSWORD)" psql -U "$(DB_USER)" -d "$(DB_NAME)" -h localhost -p 5432'
 
 ## db-drop: Drop and recreate the development database
 db-drop:
-	@CID=$$(docker ps -aq -f name=db) ; \
-	test -n "$$CID" || (echo "db container not found or not running" && exit 1) ; \
-	docker exec $$CID sh -c 'PGPASSWORD="$(DB_PASSWORD)" dropdb -U "$(DB_USER)" -h localhost -p 5432 --if-exists --force "$(DB_NAME)"' ; \
-	docker exec $$CID sh -c 'PGPASSWORD="$(DB_PASSWORD)" createdb -U "$(DB_USER)" -h localhost -p 5432 "$(DB_NAME)"'
+	@docker compose exec -T database sh -c 'PGPASSWORD="$(DB_PASSWORD)" dropdb -U "$(DB_USER)" -h localhost -p 5432 --if-exists --force "$(DB_NAME)"'
+	@docker compose exec -T database sh -c 'PGPASSWORD="$(DB_PASSWORD)" createdb -U "$(DB_USER)" -h localhost -p 5432 "$(DB_NAME)"'

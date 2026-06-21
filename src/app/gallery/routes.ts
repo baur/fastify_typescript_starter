@@ -1,6 +1,6 @@
-import conf from "#config/environment.js"
 import fastifyMultipart from "@fastify/multipart"
 import type { FastifyInstance, FastifyPluginAsync } from "fastify"
+import conf from "#config/environment.js"
 
 import s3object from "#plugins/s3object.js"
 import GalleryHandler from "./handlers.js"

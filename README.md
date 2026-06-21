@@ -342,6 +342,34 @@ Useful forwarded ports:
 - Mailpit UI: `http://localhost:8025`
 - PostgreSQL: `localhost:5432`
 
+### Windows 11 Without Dev Container
+
+You can also work directly from Windows and use Docker Compose only for the runtime services. This is the simplest option if you want to edit files in Windows, but run PostgreSQL, Mailpit, and the API in containers.
+
+Requirements:
+
+- Docker Desktop is installed
+- Docker Desktop is running before you execute Docker commands
+- PowerShell is opened in the project directory
+
+Start the project from PowerShell:
+
+```powershell
+cd C:\UserDATA\Baur\Project\CURRENT\fastify_typescript_starter
+docker compose up -d --build database mailpit
+docker compose run --rm app yarn migrate:up
+docker compose up -d --build app
+docker compose logs -f app
+```
+
+Useful URLs:
+
+- API: `http://localhost:3000`
+- Mailpit UI: `http://localhost:8025`
+- PostgreSQL: `localhost:5432`
+
+If Docker reports an error like `failed to connect to the docker API` or mentions `dockerDesktopLinuxEngine`, Docker Desktop is not running yet. Open Docker Desktop, wait until the engine is running, then retry the command.
+
 ### Daily Commands
 
 Common commands for day-to-day development:

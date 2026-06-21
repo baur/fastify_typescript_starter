@@ -23,20 +23,20 @@ class GalleryHandler {
             const contents: Array<{ Key?: string; LastModified?: string; Size?: number; Url?: string }> = []
 
             const stream = this.fastify.s3.listObjectsV2(conf.storage.bucket || "", "", true)
-            data = await new Promise<{ Contents: Array<{ Key?: string; LastModified?: string; Size?: number; Url?: string }> }>(
-                (resolve, reject) => {
-                    stream.on("data", (object) => {
-                        contents.push({
-                            Key: object.name,
-                            LastModified: object.lastModified?.toISOString(),
-                            Size: object.size,
-                            Url: `${conf.storage.publicBaseUrl}/${conf.storage.bucket}/${object.name}`,
-                        })
+            data = await new Promise<{
+                Contents: Array<{ Key?: string; LastModified?: string; Size?: number; Url?: string }>
+            }>((resolve, reject) => {
+                stream.on("data", (object) => {
+                    contents.push({
+                        Key: object.name,
+                        LastModified: object.lastModified?.toISOString(),
+                        Size: object.size,
+                        Url: `${conf.storage.publicBaseUrl}/${conf.storage.bucket}/${object.name}`,
                     })
-                    stream.on("end", () => resolve({ Contents: contents }))
-                    stream.on("error", reject)
-                },
-            )
+                })
+                stream.on("end", () => resolve({ Contents: contents }))
+                stream.on("error", reject)
+            })
             await this.fastify.cache.set(key, data)
         }
 
@@ -60,16 +60,10 @@ class GalleryHandler {
             throw this.fastify.httpErrors.notAcceptable(`Type: ${data.mimetype} not allowed!`)
         }
 
-        await this.fastify.s3.putObject(
-            conf.storage.bucket || "",
-            req.query.Key,
-            buffer,
-            buffer.length,
-            {
-                "Content-Type": data.mimetype,
-                "Cache-Control": "public,max-age=2628000,s-maxage=2628000",
-            },
-        )
+        await this.fastify.s3.putObject(conf.storage.bucket || "", req.query.Key, buffer, buffer.length, {
+            "Content-Type": data.mimetype,
+            "Cache-Control": "public,max-age=2628000,s-maxage=2628000",
+        })
         await this.fastify.cache.flush("gallery:list")
 
         reply.code(201)
