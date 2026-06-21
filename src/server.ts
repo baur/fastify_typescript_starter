@@ -47,6 +47,11 @@ const createServer = async () => {
         conf.cors.origin.push(/^https?:\/\/localhost(:\d{1,5})?$/)
         conf.cors.origin.push(/^https:\/\/[a-z0-9-]+\.ngrok(-free)?\.app$/)
         conf.cors.origin.push(/^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/)
+        conf.csp.directives.defaultSrc = ["'self'"]
+        conf.csp.directives.scriptSrc = ["'self'", "'unsafe-inline'"]
+        conf.csp.directives.styleSrc = ["'self'", "'unsafe-inline'"]
+        conf.csp.directives.fontSrc = ["'self'", "data:"]
+        conf.csp.directives.connectSrc = ["'self'"]
     }
 
     await app
@@ -75,6 +80,14 @@ const createServer = async () => {
             scope.addHook("onRequest", scope.basicAuth)
             await scope.register(import("@scalar/fastify-api-reference"), {
                 routePrefix: "/openapi",
+                configuration: {
+                    withDefaultFonts: false,
+                    telemetry: false,
+                    agent: {
+                        disabled: true,
+                        hideAddApi: true,
+                    },
+                },
             })
         })
     }
