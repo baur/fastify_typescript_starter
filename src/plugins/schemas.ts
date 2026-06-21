@@ -3,6 +3,7 @@ import fp from "fastify-plugin"
 import { models as authModels } from "#app/auth/schema.js"
 import { models as baseModels } from "#app/base/schema.js"
 import { models as galleryModels } from "#app/gallery/schema.js"
+import { models as plantModels } from "#app/plants/schema.js"
 import { models as configModels } from "#config/schema.js"
 
 type SchemaJson = {
@@ -11,7 +12,13 @@ type SchemaJson = {
     [key: string]: unknown
 }
 
-export const allModels: readonly unknown[] = [...configModels, ...authModels, ...baseModels, ...galleryModels]
+export const allModels: readonly unknown[] = [
+    ...configModels,
+    ...authModels,
+    ...baseModels,
+    ...galleryModels,
+    ...plantModels,
+]
 
 const isSchemaJson = (value: unknown): value is SchemaJson => typeof value === "object" && value !== null
 

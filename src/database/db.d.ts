@@ -20,8 +20,6 @@ export type JsonPrimitive = boolean | number | string | null
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive
 
-export type QueueJobState = "active" | "cancelled" | "completed" | "created" | "failed" | "retry"
-
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export type UserRole = "admin" | "customer" | "manager"
@@ -44,105 +42,20 @@ export interface Cache {
     value: Json
 }
 
-export interface QueueBam {
-    command: string
-    completed_on: Timestamp | null
-    created_on: Generated<Timestamp>
-    error: string | null
-    id: Generated<string>
-    name: string
-    queue: string | null
-    started_on: Timestamp | null
-    status: Generated<string>
-    table_name: string
-    version: number
+export interface DimPlant {
+    created_at: Generated<Timestamp>
+    plant_id: Generated<number>
+    plant_id_parent: number | null
+    plant_name: string
+    plant_type_id: number
+    updated_at: Generated<Timestamp>
 }
 
-export interface QueueJob {
-    completed_on: Timestamp | null
-    created_on: Generated<Timestamp>
-    data: Json | null
-    dead_letter: string | null
-    deletion_seconds: Generated<number>
-    expire_seconds: Generated<number>
-    group_id: string | null
-    group_tier: string | null
-    heartbeat_on: Timestamp | null
-    heartbeat_seconds: number | null
-    id: Generated<string>
-    keep_until: Generated<Timestamp>
-    name: string
-    output: Json | null
-    policy: string | null
-    priority: Generated<number>
-    retry_backoff: Generated<boolean>
-    retry_count: Generated<number>
-    retry_delay: Generated<number>
-    retry_delay_max: number | null
-    retry_limit: Generated<number>
-    singleton_key: string | null
-    singleton_on: Timestamp | null
-    start_after: Generated<Timestamp>
-    started_on: Timestamp | null
-    state: Generated<QueueJobState>
-}
-
-export interface QueueQueue {
-    active_count: Generated<number>
-    created_on: Generated<Timestamp>
-    dead_letter: string | null
-    deferred_count: Generated<number>
-    deletion_seconds: number
-    expire_seconds: number
-    heartbeat_seconds: number | null
-    maintain_on: Timestamp | null
-    monitor_on: Timestamp | null
-    name: string
-    partition: boolean
-    policy: string
-    queued_count: Generated<number>
-    retention_seconds: number
-    retry_backoff: boolean
-    retry_delay: number
-    retry_delay_max: number | null
-    retry_limit: number
-    singletons_active: string[] | null
-    table_name: string
-    total_count: Generated<number>
-    updated_on: Generated<Timestamp>
-    warning_queued: Generated<number>
-}
-
-export interface QueueSchedule {
-    created_on: Generated<Timestamp>
-    cron: string
-    data: Json | null
-    key: Generated<string>
-    name: string
-    options: Json | null
-    timezone: string | null
-    updated_on: Generated<Timestamp>
-}
-
-export interface QueueSubscription {
-    created_on: Generated<Timestamp>
-    event: string
-    name: string
-    updated_on: Generated<Timestamp>
-}
-
-export interface QueueVersion {
-    bam_on: Timestamp | null
-    cron_on: Timestamp | null
-    version: number
-}
-
-export interface QueueWarning {
-    created_on: Generated<Timestamp>
-    data: Json | null
-    id: Generated<string>
-    message: string
-    type: string
+export interface DimPlantType {
+    created_at: Generated<Timestamp>
+    plant_type_id: Generated<number>
+    plant_type_name: string
+    updated_at: Generated<Timestamp>
 }
 
 export interface SchemaMigrations {
@@ -152,12 +65,7 @@ export interface SchemaMigrations {
 export interface DB {
     auth_users: AuthUsers
     cache: Cache
-    "queue.bam": QueueBam
-    "queue.job": QueueJob
-    "queue.queue": QueueQueue
-    "queue.schedule": QueueSchedule
-    "queue.subscription": QueueSubscription
-    "queue.version": QueueVersion
-    "queue.warning": QueueWarning
+    dim_plant: DimPlant
+    dim_plant_type: DimPlantType
     schema_migrations: SchemaMigrations
 }
