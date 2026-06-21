@@ -1,4 +1,5 @@
 import "dotenv/config"
+import { pathToFileURL } from "node:url"
 import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox"
 import closeWithGrace from "close-with-grace"
 import fastify from "fastify"
@@ -32,7 +33,7 @@ const devLogger = {
     },
 } as const
 
-const createServer = async () => {
+export const createServer = async () => {
     const app = fastify({
         trustProxy: true,
         requestTimeout: conf.requestTimeout,
@@ -119,7 +120,7 @@ const createServer = async () => {
     return app
 }
 
-const startServer = async () => {
+export const startServer = async () => {
     try {
         const app = await createServer()
         await app.listen({
@@ -133,4 +134,6 @@ const startServer = async () => {
     }
 }
 
-await startServer()
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+    await startServer()
+}
